@@ -1,40 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_memset.c                                        :+:      :+:    :+:   */
+/*   free.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mfassbin <mfassbin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/10/05 15:08:35 by mfassbin          #+#    #+#             */
-/*   Updated: 2023/10/20 16:20:37 by mfassbin         ###   ########.fr       */
+/*   Created: 2024/04/03 16:21:08 by mfassbin          #+#    #+#             */
+/*   Updated: 2024/04/03 16:23:43 by mfassbin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "pipex.h"
 
-void	*ft_memset(void *s, int c, size_t n)
+void	free_array(char **cmd)
 {
-	char	*str;
-	size_t	i;
+	int i;
 
-	str = (char *)s;
-	i = 0;
-	while (i < n)
-	{
-		str[i] = (char) c;
-		i++;
-	}
-	return (s);
+	i = -1;
+	while(cmd[++i])
+		free(cmd[i]);
+	free(cmd);
 }
-/* 
-#include <stdio.h>
-#include <string.h>
 
-int main(void)
+void free_and_exit(t_pipex *ppx, char *error)
 {
-	char s[] = "Marcelo";
-	char s2[] = "Marcelo";
-
-    printf("ft_memset: %s\n", (char *)ft_memset(s, 't', 10));
-   	printf("memset: %s\n", (char *)memset(s2, 't', 10));
-} */
+	perror(error);
+	free_array(ppx->path);
+	free_array(ppx->cmd1);
+	free_array(ppx->cmd2);
+	exit(EXIT_FAILURE);
+}

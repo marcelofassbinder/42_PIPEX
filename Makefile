@@ -1,26 +1,29 @@
-CFILES = main.c 
+CFILES = pipex.c free.c ft_strjoin_space.c
 OBJS = ${CFILES:.c=.o}
-CFLAGS = -Wall -Werror -Wextra -g
+CFLAGS = -g -Wall -Werror -Wextra  -fPIC
 GCC = gcc 
-PRINTFD = ft_printf
-PRINTFA = ft_printf/libftprintf.a
+LIBFT = libft
+LIBFTA = libft/libft.a
 NAME = pipex
 RM = rm -f
 
 all: $(NAME)
 
-$(NAME): $(OBJS) $(PRINTFA)
-	$(GCC) $(CFLAGS) $(OBJS) $(PRINTFA) -o $(NAME)
+$(NAME): $(OBJS) $(LIBFTA)
+	$(GCC) $(CFLAGS) $(OBJS) $(LIBFTA) -o $(NAME)
+	@echo "\033[032mPIPEX COMPILED\033[0m"
 
-$(PRINTFA): $(PRINTFD)
-	make -C $(PRINTFD)
+$(LIBFTA): $(LIBFT)
+	make -s -C $(LIBFT)
 
 clean:
 	$(RM) $(OBJS)
-	make clean -C $(PRINTFD)
+	make clean -s -C $(LIBFT)
 
 fclean: clean
 	$(RM) $(NAME)
-	make fclean -C $(PRINTFD)
+	make fclean -s -C $(LIBFT)
 
 re: fclean all
+
+.SILENT:
