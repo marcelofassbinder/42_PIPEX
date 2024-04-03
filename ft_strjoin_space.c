@@ -1,26 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strjoin.c                                       :+:      :+:    :+:   */
+/*   ft_strjoin_space.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mfassbin <mfassbin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/11 18:23:11 by mfassbin          #+#    #+#             */
-/*   Updated: 2023/10/20 15:41:13 by mfassbin         ###   ########.fr       */
+/*   Updated: 2024/04/03 19:48:51 by mfassbin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "pipex.h"
 
-char	*ft_strjoin(char const *s1, char const *s2)
+char	*ft_strjoin_space(char const *s1, char const *s2)
 {
 	char	*result;
 	int		i;
 	int		j;
 	int		size;
 
+	if (!s2)
+		return((char *)s1);
 	size = ft_strlen(s1) + ft_strlen(s2) + 1;
-	result = (char *) ft_calloc(sizeof(char), size);
+	result = (char *) malloc(sizeof(char) * size);
 	if (result == NULL)
 		return (NULL);
 	i = 0;
@@ -29,14 +31,12 @@ char	*ft_strjoin(char const *s1, char const *s2)
 		result[i] = s1[i];
 		i++;
 	}
+	result[i++] = ' ';
 	j = 0;
 	while (s2[j])
-	{
-		result[i] = s2[j];
-		i++;
-		j++;
-	}
+		result[i++] = s2[j++];
 	result[i] = '\0';
+	free((void*)s1);
 	return (result);
 }
 /* 
