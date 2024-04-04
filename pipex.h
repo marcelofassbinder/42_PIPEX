@@ -6,7 +6,7 @@
 /*   By: mfassbin <mfassbin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/03 12:39:00 by mfassbin          #+#    #+#             */
-/*   Updated: 2024/04/04 15:35:18 by mfassbin         ###   ########.fr       */
+/*   Updated: 2024/04/04 16:14:19 by mfassbin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,11 +36,12 @@ void	free_array(char **cmd);
 void	exchange_fd(t_pipex *ppx, int file, char process);
 void	exec_process(t_pipex *ppx, char **envp, char c);
 char    **ft_path(char **envp);
-t_pipex init_struct(char **argv, char **envp);
 char    **ft_split_trim(char *str, char c);
+void	handle_input(int argc, char **argv);
 
 //MAIN.C
 void	child_process(t_pipex *ppx, char *file, char **envp);
 void	parent_process(t_pipex *ppx, char *file, char **envp);
+t_pipex init_struct(char **argv, char **envp);
 
 #endif
