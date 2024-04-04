@@ -1,4 +1,4 @@
-CFILES = pipex.c free.c ft_strjoin_space.c
+CFILES = pipex.c free.c ft_split_trim.c
 OBJS = ${CFILES:.c=.o}
 CFLAGS = -g -Wall -Werror -Wextra  -fPIC
 GCC = gcc 
