@@ -6,7 +6,7 @@
 /*   By: mfassbin <mfassbin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/02 14:25:38 by marcelo           #+#    #+#             */
-/*   Updated: 2024/04/04 15:35:18 by mfassbin         ###   ########.fr       */
+/*   Updated: 2024/04/04 16:14:19 by mfassbin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,15 +35,30 @@ void	parent_process(t_pipex *ppx, char *file, char **envp)
 	exec_process(ppx, envp, 'p');
 }
 
+t_pipex init_struct(char **argv, char **envp)
+{
+	t_pipex	ppx;
+
+	ppx.pid = 0;
+	ppx.fd[0] = 0;
+	ppx.fd[1] = 0;
+	ppx.path = ft_path(envp);
+	if (ft_strchr(argv[2], 39) != NULL)
+		ppx.cmd1 = ft_split_trim(argv[2], 39);
+	else
+		ppx.cmd1 = ft_split(argv[2], ' ');
+	if (ft_strchr(argv[3], 39) != NULL)
+		ppx.cmd2 = ft_split_trim(argv[3], 39);
+	else
+		ppx.cmd2 = ft_split(argv[3], ' ');
+	return (ppx);
+}
+
 int main(int argc, char **argv, char **envp)
 {
 	t_pipex ppx;
 
-	if (argc != 5)
-	{
-		ft_printf(2, "Error\nCorrect usage: %s file1 cmd1 cmd2 file2\n", argv[0]);
-		exit(EXIT_FAILURE);
-	}
+	handle_input(argc, argv);
 	ppx = init_struct(argv, envp);
 	if (pipe(ppx.fd) == -1)
 		free_and_exit(&ppx, "pipe");

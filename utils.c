@@ -1,16 +1,36 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   utils.c.c                                          :+:      :+:    :+:   */
+/*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mfassbin <mfassbin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/11 18:23:11 by mfassbin          #+#    #+#             */
-/*   Updated: 2024/04/04 15:35:18 by mfassbin         ###   ########.fr       */
+/*   Updated: 2024/04/04 16:14:19 by mfassbin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
+
+void	handle_input(int argc, char **argv)
+{
+	int i;
+	
+	if (argc != 5)
+	{
+		ft_printf(2, "Error\nCorrect usage: %s file1 cmd1 cmd2 file2\n", argv[0]);
+		exit(EXIT_FAILURE);
+	}
+	i = -1;
+	while(argv[++i])
+	{
+		if(argv[i][0] == 0)
+		{
+			ft_printf(2, "Error\nInvalid arguments\n");
+			exit(EXIT_FAILURE);
+		}
+	}
+}
 
 void	exchange_fd(t_pipex *ppx, int file, char process)
 {
@@ -58,6 +78,7 @@ void	exec_process(t_pipex *ppx, char **envp, char c)
 		free_and_exit(ppx, ppx->cmd2[0]);
 	}
 }
+
 char **ft_path(char **envp)
 {
 	char **path;
@@ -74,25 +95,6 @@ char **ft_path(char **envp)
 		path[i] = ft_strjoin(path[i], "/");
 	free(temp);
 	return(path);
-}
-
-t_pipex init_struct(char **argv, char **envp)
-{
-	t_pipex	ppx;
-
-	ppx.pid = 0;
-	ppx.fd[0] = 0;
-	ppx.fd[1] = 0;
-	ppx.path = ft_path(envp);
-	if (ft_strchr(argv[2], 39) != NULL)
-		ppx.cmd1 = ft_split_trim(argv[2], 39);
-	else
-		ppx.cmd1 = ft_split(argv[2], ' ');
-	if (ft_strchr(argv[3], 39) != NULL)
-		ppx.cmd2 = ft_split_trim(argv[3], 39);
-	else
-		ppx.cmd2 = ft_split(argv[3], ' ');
-	return (ppx);
 }
 
 char **ft_split_trim(char *str, char c)
