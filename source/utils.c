@@ -6,7 +6,7 @@
 /*   By: mfassbin <mfassbin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/11 18:23:11 by mfassbin          #+#    #+#             */
-/*   Updated: 2024/04/04 16:14:19 by mfassbin         ###   ########.fr       */
+/*   Updated: 2024/04/06 17:07:34 by mfassbin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ void	exec_process(t_pipex *ppx, char **envp, char c)
 			ppx->path[i] = ft_strjoin(ppx->path[i], ppx->cmd1[0]);
 			execve(ppx->path[i], ppx->cmd1, envp); //SE PASSAR DESTA LINHA É PQ NAO EXECUTOU
 		}
-		free_and_exit(ppx, ppx->cmd1[0]);
+		free_and_exit(ppx, ppx->cmd1[0], EXIT_COMMAND);
 	}
 	if (c == 'p')
 	{
@@ -75,7 +75,7 @@ void	exec_process(t_pipex *ppx, char **envp, char c)
 			ppx->path[i] = ft_strjoin(ppx->path[i], ppx->cmd2[0]);
 			execve(ppx->path[i], ppx->cmd2, envp); //SE PASSAR DESTA LINHA É PQ NAO EXECUTOU
 		}
-		free_and_exit(ppx, ppx->cmd2[0]);
+		free_and_exit(ppx, ppx->cmd2[0], EXIT_COMMAND);
 	}
 }
 
@@ -92,7 +92,7 @@ char **ft_path(char **envp)
 	path = ft_split(temp, ':');
 	i = -1;
 	while(path[++i])
-		path[i] = ft_strjoin(path[i], "/");
+		path[i] = ft_strjoin2(path[i], "/");
 	free(temp);
 	return(path);
 }

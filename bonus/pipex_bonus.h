@@ -1,32 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   free.c                                             :+:      :+:    :+:   */
+/*   pipex_bonus.h                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mfassbin <mfassbin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/04/03 16:21:08 by mfassbin          #+#    #+#             */
-/*   Updated: 2024/04/03 16:23:43 by mfassbin         ###   ########.fr       */
+/*   Created: 2024/04/06 13:18:57 by mfassbin          #+#    #+#             */
+/*   Updated: 2024/04/06 18:05:39 by mfassbin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "pipex.h"
+#ifndef PIPEX_BONUS_H
+# define PIPEX_BONUS_H
 
-void	free_array(char **cmd)
+#include "../source/pipex.h"
+
+typedef struct  s_pipex_b
 {
-	int i;
+    int         here_doc;
+    int         processes;
+    int         pid;
+    int         **pipes;
+}               t_pipex_b;
 
-	i = -1;
-	while(cmd[++i])
-		free(cmd[i]);
-	free(cmd);
-}
-
-void free_and_exit(t_pipex *ppx, char *error)
-{
-	perror(error);
-	free_array(ppx->path);
-	free_array(ppx->cmd1);
-	free_array(ppx->cmd2);
-	exit(EXIT_FAILURE);
-}
+#endif

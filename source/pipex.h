@@ -6,18 +6,20 @@
 /*   By: mfassbin <mfassbin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/03 12:39:00 by mfassbin          #+#    #+#             */
-/*   Updated: 2024/04/04 16:14:19 by mfassbin         ###   ########.fr       */
+/*   Updated: 2024/04/06 17:07:34 by mfassbin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef PIPEX_H
 # define PIPEX_H
 
-#include "libft/libft.h"
+#include "../libft/libft.h"
 #include "stdio.h"
 #include "sys/wait.h"
 #include "fcntl.h"
 #include "errno.h"
+
+# define EXIT_COMMAND 127
 
 typedef struct	s_pipex
 {
@@ -29,7 +31,7 @@ typedef struct	s_pipex
 }				t_pipex;
 
 // FREE.C
-void    free_and_exit(t_pipex *ppx, char *error);
+void free_and_exit(t_pipex *ppx, char *error, int error_code);
 void	free_array(char **cmd);
 
 //UTILS.C

@@ -1,10 +1,13 @@
-CFILES = pipex.c free.c utils.c
+CFILES = source/pipex.c source/free.c source/utils.c
 OBJS = ${CFILES:.c=.o}
+BONUSFILES = bonus/pipex_bonus.c
+OBJSBONUS = ${BONUSFILES:.c=.o}
 CFLAGS = -g -Wall -Werror -Wextra  -fPIC
 GCC = gcc 
 LIBFT = libft
 LIBFTA = libft/libft.a
 NAME = pipex
+NAMEBONUS = pipex_bonus
 RM = rm -f
 
 all: $(NAME)
@@ -15,6 +18,12 @@ $(NAME): $(OBJS) $(LIBFTA)
 
 $(LIBFTA): $(LIBFT)
 	make -s -C $(LIBFT)
+
+bonus: $(NAMEBONUS)
+
+$(NAMEBONUS): $(OBJSBONUS) $(LIBFTA)
+	$(GCC) $(CFLAGS) $(OBJSBONUS) $(LIBFTA) -o $(NAMEBONUS)
+	@echo "\033[032mBONUS COMPILED\033[0m"
 
 clean:
 	$(RM) $(OBJS)

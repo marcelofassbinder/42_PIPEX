@@ -6,7 +6,7 @@
 /*   By: mfassbin <mfassbin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/11 18:23:11 by mfassbin          #+#    #+#             */
-/*   Updated: 2024/04/03 15:02:54 by mfassbin         ###   ########.fr       */
+/*   Updated: 2024/04/06 16:37:26 by mfassbin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,6 @@ char	*ft_strjoin(char const *s1, char const *s2)
 		j++;
 	}
 	result[i] = '\0';
-	free((void*)s1);
 	return (result);
 }
 /* 
