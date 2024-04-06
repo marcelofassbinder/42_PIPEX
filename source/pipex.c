@@ -6,7 +6,7 @@
 /*   By: mfassbin <mfassbin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/02 14:25:38 by marcelo           #+#    #+#             */
-/*   Updated: 2024/04/04 16:14:19 by mfassbin         ###   ########.fr       */
+/*   Updated: 2024/04/06 17:07:34 by mfassbin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ void	child_process(t_pipex *ppx, char *file, char **envp)
 
 	fd = open(file, O_RDONLY);
 	if (fd < 0)
-		free_and_exit(ppx, file);
+		free_and_exit(ppx, file, EXIT_FAILURE);
 	exchange_fd(ppx, fd, 'c');
 	exec_process(ppx, envp, 'c');
 }
@@ -30,7 +30,7 @@ void	parent_process(t_pipex *ppx, char *file, char **envp)
 	wait(NULL); // ESPERA ATE O PROCESSO FILHO ACABAR
 	fd = open(file, O_WRONLY | O_TRUNC | O_CREAT, 0666);
 	if (fd < 0)
-		free_and_exit(ppx, file);
+		free_and_exit(ppx, file, EXIT_FAILURE);
 	exchange_fd(ppx, fd, 'p');
 	exec_process(ppx, envp, 'p');
 }
@@ -61,7 +61,7 @@ int main(int argc, char **argv, char **envp)
 	handle_input(argc, argv);
 	ppx = init_struct(argv, envp);
 	if (pipe(ppx.fd) == -1)
-		free_and_exit(&ppx, "pipe");
+		free_and_exit(&ppx, "pipe", EXIT_FAILURE);
 	ppx.pid = fork();
 	if (ppx.pid == 0) // PROCESSO FILHO
 		child_process(&ppx, argv[1], envp);
