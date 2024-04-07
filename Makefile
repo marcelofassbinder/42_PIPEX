@@ -1,6 +1,6 @@
-CFILES = source/pipex.c source/free.c source/utils.c
+CFILES = source/pipex.c source/free.c source/main.c source/utils.c
 OBJS = ${CFILES:.c=.o}
-BONUSFILES = bonus/pipex_bonus.c
+BONUSFILES = bonus/pipex_bonus.c bonus/main_bonus.c source/utils.c source/free.c
 OBJSBONUS = ${BONUSFILES:.c=.o}
 CFLAGS = -g -Wall -Werror -Wextra  -fPIC
 GCC = gcc 
@@ -35,4 +35,4 @@ fclean: clean
 
 re: fclean all
 
-.SILENT:
+# .SILENT:
