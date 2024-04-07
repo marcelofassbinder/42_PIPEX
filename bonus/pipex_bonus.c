@@ -6,7 +6,7 @@
 /*   By: mfassbin <mfassbin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 13:18:30 by mfassbin          #+#    #+#             */
-/*   Updated: 2024/04/07 13:48:50 by mfassbin         ###   ########.fr       */
+/*   Updated: 2024/04/07 18:36:48 by mfassbin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,48 +38,36 @@ int here_doc(char **argv)
     }
     return(fd);
 }
-/* void	exec_process(t_pipex *ppx, char **envp, char c)
-{
-	int i;
 
-	if(c == 'c')
-	{
-		i = -1;
-		while(ppx->path[++i])
-		{
-			ppx->path[i] = ft_strjoin(ppx->path[i], ppx->cmd1[0]);
-			execve(ppx->path[i], ppx->cmd1, envp); //SE PASSAR DESTA LINHA É PQ NAO EXECUTOU
-		}
-		free_and_exit(ppx, ppx->cmd1[0], EXIT_COMMAND);
-	}
-	if (c == 'p')
-	{
-		i = -1;
-		while(ppx->path[++i])
-		{
-			ppx->path[i] = ft_strjoin(ppx->path[i], ppx->cmd2[0]);
-			execve(ppx->path[i], ppx->cmd2, envp); //SE PASSAR DESTA LINHA É PQ NAO EXECUTOU
-		}
-		free_and_exit(ppx, ppx->cmd2[0], EXIT_COMMAND);
-	}
-} */
-//definir o comando e executa-lo
-void	exec_command(t_pipex_b *ppx, char **argv, int i, char **envp)
+void	exec_command(t_pipex_b *ppx, int i, char **argv, char **envp)
 {
-	int		i;
-	char	*command;
+	int		j;
+	char 	**command;
 
-	command = define_command(ppx, )
 	if (ppx->here_doc == 1)
-		command = 
-	i = -1;
-	while(ppx->path[i++])
 	{
-		
+		if (ft_strchr(argv[3 + i], 39) != NULL)
+			command = ft_split_trim(argv[3 + i], 39);
+		else
+			command = ft_split(argv[3 + i], ' ');
 	}
+	else if (ppx->here_doc == 0)
+	{
+		if (ft_strchr(argv[2 + i], 39) != NULL)
+            command = ft_split_trim(argv[2 + i], 39);
+        else
+            command = ft_split(argv[2 + i], ' ');
+	}
+	j = -1;
+	while(ppx->path[j++])
+	{
+		ppx->path[j] = ft_strjoin(ppx->path[j], command[i]);
+		execve(ppx->path[j], &command[i], envp);
+	}
+	perror("execve");
 }
 
-void	first_process(t_pipex_b *ppx, char **argv)
+void	first_process(t_pipex_b *ppx, char **argv, int i, char **envp)
 {
 	int infile;
 
@@ -104,10 +92,10 @@ void	first_process(t_pipex_b *ppx, char **argv)
         	exit(EXIT_FAILURE);
     	}
 	}
-	//execute_process()
+	exec_command(ppx, i, argv, envp);
 }
 
-void	mid_process(t_pipex_b *ppx, int i)
+void	mid_process(t_pipex_b *ppx, int i, char **argv, char **envp)
 {
 	if(pipe(ppx->pipes[i]) == -1)
 		perror("pipe");
@@ -116,28 +104,27 @@ void	mid_process(t_pipex_b *ppx, int i)
 	dup2(ppx->pipes[i][0], STDOUT_FILENO);
 	close(ppx->pipes[i][0]);
 	close(ppx->pipes[i - 1][1]);
-	//execute_process()
+	exec_command(ppx, i, argv, envp);
 }
 
-void	last_process(t_pipex_b *ppx, char **argv, int argc, int i)
+void	last_process(t_pipex_b *ppx, char **argv, int argc, int i, char **envp)
 {
 	int outfile;
 
 	outfile = open(argv[argc -1], O_WRONLY | O_TRUNC | O_CREAT, 0666);
 	if (outfile < 0)
 		perror(argv[argc - 1]);
-	if (pipe(ppx->pipes[i] == -1))
+	if (pipe(ppx->pipes[i]) == -1)
 		perror("pipe");
 	close(ppx->pipes[i][1]);
 	dup2(ppx->pipes[i - 1][1], STDIN_FILENO);
 	dup2(ppx->pipes[i][0], STDOUT_FILENO);
 	close(ppx->pipes[i][0]);
 	close(ppx->pipes[i - 1][1]);
-	//execute_command
+	exec_command(ppx, i, argv, envp);
 }
 
-
-t_pipex_b init_struct(int argc, char **argv, char **envp)
+t_pipex_b init_bonus(int argc, char **argv, char **envp)
 {
 	t_pipex_b	ppx;
 
@@ -149,54 +136,7 @@ t_pipex_b init_struct(int argc, char **argv, char **envp)
 		ppx.processes = argc - 4;
 	}
 	ppx.pipes = ft_calloc(sizeof(int *), ppx.processes - 1);
-	ppx.commands = ft_calloc(sizeof(char *), ppx.processes);
 	ppx.path = ft_path(envp);
 	ppx.pid = 0;
-}
-
-int main(int argc, char **argv, char envp)
-{
-	t_pipex_b   ppx;
-    int         infile;
-	int			i;
-
-    ppx = (t_pipex_b){0};
-	
-	if (ft_strcmp(argv[1], "here_doc") == 0)
-    {
-		ppx.pipes = ft_calloc(sizeof(int *), argc - 4);
-        ppx.here_doc = 1;
-        infile = here_doc(argv);
-    }
-    else
-	{
-        infile = open(argv[1],  O_WRONLY, 0666);
-		ppx.pipes = ft_calloc(sizeof(int *), argc - 3);
-	}
-	if (infile < 0)
-		perror("infile");
-	i = 0;
-	while(ppx.pipes[i])
-	{
-		ppx.pid = fork();
-		if (ppx.pid == 0)
-		{
-			if (i == 0)
-				first_process(&ppx, infile);
-			else
-				mid_process(&ppx, i);
-		}
-		if (ppx.pid > 0)
-			return ;
-		i++;
-	}
-	last_process(&ppx, argv, argc, i);
-	/* ppx = init_struct(argv, envp);
-	if (pipe(ppx.fd) == -1)
-		free_and_exit(&ppx, "pipe", EXIT_FAILURE);
-	ppx.pid = fork();
-	if (ppx.pid == 0) // PROCESSO FILHO
-		child_process(&ppx, argv[1], envp);
-	if (ppx.pid > 0) // PROCESSO PAI
-		parent_process(&ppx, argv[4], envp); */
+	return(ppx);
 }
