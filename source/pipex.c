@@ -6,7 +6,7 @@
 /*   By: mfassbin <mfassbin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/02 14:25:38 by marcelo           #+#    #+#             */
-/*   Updated: 2024/04/08 11:51:59 by mfassbin         ###   ########.fr       */
+/*   Updated: 2024/04/08 12:49:55 by mfassbin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,8 @@ int main(int argc, char **argv, char **envp)
 	if (pipe(ppx.fd) == -1)
 		free_and_exit(&ppx, "pipe", EXIT_FAILURE);
 	ppx.pid = fork();
+	if (ppx.pid == -1)
+		free_and_exit(&ppx, "fork", EXIT_FAILURE);
 	if (ppx.pid == 0) // PROCESSO FILHO
 		child_process(&ppx, argv[1], envp);
 	if (ppx.pid > 0) // PROCESSO PAI

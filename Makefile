@@ -1,6 +1,6 @@
 CFILES = source/pipex.c source/free.c source/utils.c
 OBJS = ${CFILES:.c=.o}
-BONUSFILES = bonus/pipex_bonus.c source/utils.c source/free.c
+BONUSFILES = bonus/pipex_bonus.c bonus/utils_bonus.c source/utils.c source/free.c
 OBJSBONUS = ${BONUSFILES:.c=.o}
 CFLAGS = -g -Wall -Werror -Wextra  -fPIC
 GCC = gcc 
