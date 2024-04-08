@@ -6,7 +6,7 @@
 /*   By: mfassbin <mfassbin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/02 14:25:38 by marcelo           #+#    #+#             */
-/*   Updated: 2024/04/07 18:33:03 by mfassbin         ###   ########.fr       */
+/*   Updated: 2024/04/08 11:51:59 by mfassbin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,3 +54,17 @@ t_pipex init_struct(char **argv, char **envp)
 	return (ppx);
 }
 
+int main(int argc, char **argv, char **envp)
+{
+	t_pipex ppx;
+
+	handle_input(argc, argv);
+	ppx = init_struct(argv, envp);
+	if (pipe(ppx.fd) == -1)
+		free_and_exit(&ppx, "pipe", EXIT_FAILURE);
+	ppx.pid = fork();
+	if (ppx.pid == 0) // PROCESSO FILHO
+		child_process(&ppx, argv[1], envp);
+	if (ppx.pid > 0) // PROCESSO PAI
+		parent_process(&ppx, argv[4], envp);
+}
