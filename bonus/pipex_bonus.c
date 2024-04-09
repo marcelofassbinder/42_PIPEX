@@ -6,13 +6,13 @@
 /*   By: mfassbin <mfassbin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 13:15:11 by mfassbin          #+#    #+#             */
-/*   Updated: 2024/04/09 16:02:29 by mfassbin         ###   ########.fr       */
+/*   Updated: 2024/04/09 21:20:08 by mfassbin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex_bonus.h"
 
-int here_doc(char **argv)
+int here_doc(t_pipex_b *ppx, char **argv)
 {
     int     fd;
     char    *line;
@@ -21,10 +21,7 @@ int here_doc(char **argv)
 	limit = argv[2];
     fd = open("here_doc", O_CREAT | O_WRONLY | O_TRUNC, 0666);
     if (fd < 0)
-    {
-        perror("here_doc");
-        exit(EXIT_FAILURE);
-    }
+        free_and_exit_b(ppx, "open", EXIT_FAILURE);
     while(1)
     {
         ft_printf(1, ">");
@@ -38,6 +35,7 @@ int here_doc(char **argv)
         write(fd, line, ft_strlen(line));
         free(line);
     }
+	close(fd);
     return(fd);
 }
 
@@ -66,7 +64,7 @@ void	exec_command(t_pipex_b *ppx, int i, char **argv, char **envp)
 		ppx->path[j] = ft_strjoin(ppx->path[j], command[0]);
 		execve(ppx->path[j], command, envp);
 	}
-	perror("execve");
+	free_and_exit_b(ppx, command[0], 127);
 }
 
 int open_infile(t_pipex_b *ppx, char **argv)
@@ -77,10 +75,15 @@ int open_infile(t_pipex_b *ppx, char **argv)
 	{
 		infile = open(argv[1], O_RDONLY);
 		if (infile < 0)
-			perror("open infile");
+			free_and_exit_b(ppx, "open", EXIT_FAILURE);
 	}
 	if (ppx->here_doc == 1)
-		infile = here_doc(argv);
+	{
+		here_doc(ppx, argv);
+		infile = open("here_doc", O_RDONLY, 0666);
+		if (infile == -1)
+			free_and_exit_b(ppx, "open", EXIT_FAILURE);
+	}
 	return (infile);
 }
 
@@ -90,32 +93,31 @@ void	last_process(t_pipex_b *ppx, int i, int argc, char **argv, char **envp)
 
 	outfile = open(argv[argc - 1], O_WRONLY | O_TRUNC | O_CREAT, 0666);
 	if (outfile == -1)
-		perror("open outfile");
+		free_and_exit_b(ppx, "open", EXIT_FAILURE);
 	dup2(outfile, STDOUT_FILENO);
 	close(ppx->fd[1]);
 	close(outfile);
+	if (ppx->here_doc == 1)
+		unlink("here_doc");//deleta o arquivo "here_doc"
 	exec_command(ppx, i, argv, envp);
-	perror("execve");
 }
 
-void	child_process_b(t_pipex_b *ppx, int fd_redir, int i, char **argv, char **envp)
+void	child_process_b(t_pipex_b *ppx, int *fd_redir, int i, char **argv, char **envp)
 {
-	dup2(fd_redir, STDIN_FILENO); //transforma o fd do infile ou do pipe anterior no input deste processo
-	close(fd_redir);//fecha o fd do infile ou do pipe anterior
+	dup2(*fd_redir, STDIN_FILENO); //transforma o fd do infile ou do pipe anterior no input deste processo
+	close(*fd_redir);//fecha o fd do infile ou do pipe anterior
 	close(ppx->fd[0]);// fecha o fd de leitura
 	dup2(ppx->fd[1], STDOUT_FILENO);//transforma o fd de escrita do pipe no output do processo
 	close(ppx->fd[1]);// fecha o fd de escrita
-	if (ppx->here_doc == 1)
-		unlink("here_doc");//deleta o arquivo "here_doc"
 	exec_command(ppx, i, argv, envp);//executa o comando
 }
 
-void	parent_process_b(t_pipex_b *ppx, int fd_redir)
+void	parent_process_b(t_pipex_b *ppx, int *fd_redir)
 {
 	wait(NULL);
-	close(fd_redir);
+	close(*fd_redir);
 	close(ppx->fd[1]);
-	fd_redir = ppx->fd[0];
+	*fd_redir = ppx->fd[0];
 }
 
 int main(int argc, char **argv, char **envp)
@@ -131,28 +133,14 @@ int main(int argc, char **argv, char **envp)
 	while(i < ppx.processes - 1)
 	{
 		if (pipe(ppx.fd) == -1)
-			perror("pipe");
+			free_and_exit_b(&ppx, "pipe", EXIT_FAILURE);
 		ppx.pid = fork();
 		if (ppx.pid == -1)
-			perror("fork");
+			free_and_exit_b(&ppx, "FORK", EXIT_FAILURE);
 		if (ppx.pid == 0)
-		{
-			dup2(fd_redir, STDIN_FILENO); //transforma o fd do infile ou do pipe anterior no input deste processo
-			close(fd_redir);//fecha o fd do infile ou do pipe anterior
-			close(ppx.fd[0]);// fecha o fd de leitura
-			dup2(ppx.fd[1], STDOUT_FILENO);//transforma o fd de escrita do pipe no output do processo
-			close(ppx.fd[1]);// fecha o fd de escrita
-			if (ppx.here_doc == 1)
-				unlink("here_doc");//deleta o arquivo "here_doc"
-			exec_command(&ppx, i, argv, envp);//executa o comandochild_process_b(&ppx, fd_redir, i, argv, envp);
-		}
+			child_process_b(&ppx, &fd_redir, i, argv, envp);
 		if (ppx.pid > 0)
-		{
-			wait(NULL);
-			close(fd_redir);
-			close(ppx.fd[1]);
-			fd_redir = ppx.fd[0];
-		}
+			parent_process_b(&ppx, &fd_redir);
 		i++;
 	}
 	dup2(fd_redir, STDIN_FILENO);

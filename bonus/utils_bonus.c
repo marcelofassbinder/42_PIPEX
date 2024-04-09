@@ -6,7 +6,7 @@
 /*   By: mfassbin <mfassbin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 15:25:52 by mfassbin          #+#    #+#             */
-/*   Updated: 2024/04/08 16:57:02 by mfassbin         ###   ########.fr       */
+/*   Updated: 2024/04/09 21:32:51 by mfassbin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ void	handle_input_b(int argc, char **argv)
 	i = -1;
 	while(argv[++i])
 	{
-		if(argv[i][0] == 0)
+		if(argv[i][0] == 0 || argv[i][0] == 39 || argv[i][0] == 62 || argv[i][0] == 60 )
 		{
 			ft_printf(2, "Error\nInvalid arguments\n");
 			exit(EXIT_FAILURE);
