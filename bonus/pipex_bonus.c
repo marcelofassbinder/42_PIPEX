@@ -6,7 +6,7 @@
 /*   By: mfassbin <mfassbin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 13:15:11 by mfassbin          #+#    #+#             */
-/*   Updated: 2024/04/08 17:25:26 by mfassbin         ###   ########.fr       */
+/*   Updated: 2024/04/09 16:02:29 by mfassbin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,8 +102,8 @@ void	child_process_b(t_pipex_b *ppx, int fd_redir, int i, char **argv, char **en
 {
 	dup2(fd_redir, STDIN_FILENO); //transforma o fd do infile ou do pipe anterior no input deste processo
 	close(fd_redir);//fecha o fd do infile ou do pipe anterior
-	dup2(ppx->fd[1], STDOUT_FILENO);//transforma o fd de escrita do pipe no output do processo
 	close(ppx->fd[0]);// fecha o fd de leitura
+	dup2(ppx->fd[1], STDOUT_FILENO);//transforma o fd de escrita do pipe no output do processo
 	close(ppx->fd[1]);// fecha o fd de escrita
 	if (ppx->here_doc == 1)
 		unlink("here_doc");//deleta o arquivo "here_doc"
@@ -112,7 +112,7 @@ void	child_process_b(t_pipex_b *ppx, int fd_redir, int i, char **argv, char **en
 
 void	parent_process_b(t_pipex_b *ppx, int fd_redir)
 {
-	//wait(NULL);
+	wait(NULL);
 	close(fd_redir);
 	close(ppx->fd[1]);
 	fd_redir = ppx->fd[0];
@@ -136,9 +136,23 @@ int main(int argc, char **argv, char **envp)
 		if (ppx.pid == -1)
 			perror("fork");
 		if (ppx.pid == 0)
-			child_process_b(&ppx, fd_redir, i, argv, envp);
+		{
+			dup2(fd_redir, STDIN_FILENO); //transforma o fd do infile ou do pipe anterior no input deste processo
+			close(fd_redir);//fecha o fd do infile ou do pipe anterior
+			close(ppx.fd[0]);// fecha o fd de leitura
+			dup2(ppx.fd[1], STDOUT_FILENO);//transforma o fd de escrita do pipe no output do processo
+			close(ppx.fd[1]);// fecha o fd de escrita
+			if (ppx.here_doc == 1)
+				unlink("here_doc");//deleta o arquivo "here_doc"
+			exec_command(&ppx, i, argv, envp);//executa o comandochild_process_b(&ppx, fd_redir, i, argv, envp);
+		}
 		if (ppx.pid > 0)
-			parent_process_b(&ppx, fd_redir);
+		{
+			wait(NULL);
+			close(fd_redir);
+			close(ppx.fd[1]);
+			fd_redir = ppx.fd[0];
+		}
 		i++;
 	}
 	dup2(fd_redir, STDIN_FILENO);
