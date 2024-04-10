@@ -6,7 +6,7 @@
 /*   By: mfassbin <mfassbin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/30 16:58:39 by mfassbin          #+#    #+#             */
-/*   Updated: 2024/04/01 15:54:06 by mfassbin         ###   ########.fr       */
+/*   Updated: 2024/04/10 17:44:05 by mfassbin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,6 +90,8 @@ char	*get_next_line(int fd)
 	static char		*dest; 
 	char			*line;
 
+	if (fd == -1)
+		free(dest);
 	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
 	dest = read_line(fd, dest);

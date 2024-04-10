@@ -1,20 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   free_bonus.c                                       :+:      :+:    :+:   */
+/*   ft_isspace.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mfassbin <mfassbin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/04/09 20:45:32 by mfassbin          #+#    #+#             */
-/*   Updated: 2024/04/09 21:24:07 by mfassbin         ###   ########.fr       */
+/*   Created: 2024/04/10 15:17:34 by mfassbin          #+#    #+#             */
+/*   Updated: 2024/04/10 17:59:34 by mfassbin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "pipex_bonus.h"
+#include "libft.h"
 
-void    free_and_exit_b(t_pipex_b *ppx, char *error, int error_code)
+int ft_isspace(int c)
 {
-	free_array(ppx->path);
-	perror(error);
-	exit(error_code);
+    if (c == 9 || c == 32)
+        return (0);
+    return(1);
 }
