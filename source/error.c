@@ -6,7 +6,7 @@
 /*   By: mfassbin <mfassbin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/03 16:21:08 by mfassbin          #+#    #+#             */
-/*   Updated: 2024/04/10 19:43:03 by mfassbin         ###   ########.fr       */
+/*   Updated: 2024/04/10 19:53:03 by mfassbin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,10 +34,10 @@ void	error_exit(char *error, int error_code)
  */
 void	free_array(char **array)
 {
-	int i;
+	int	i;
 
 	i = -1;
-	while(array[++i])
+	while (array[++i])
 		free(array[i]);
 	free(array);
 }
@@ -49,7 +49,7 @@ void	free_array(char **array)
  * @param error The error message to display.
  * @param error_code The error code to exit with.
  */
-void free_and_exit(t_pipex *ppx, char *error, int error_code)
+void	free_and_exit(t_pipex *ppx, char *error, int error_code)
 {
 	perror(error);
 	free_array(ppx->path);
