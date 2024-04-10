@@ -6,7 +6,7 @@
 /*   By: mfassbin <mfassbin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/02 14:25:38 by marcelo           #+#    #+#             */
-/*   Updated: 2024/04/10 19:43:03 by mfassbin         ###   ########.fr       */
+/*   Updated: 2024/04/10 19:52:16 by mfassbin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,15 +21,16 @@
  */
 void	handle_input(int argc, char **argv)
 {
-	int i;
-	int j;
-	
+	int	i;
+	int	j;
+
 	if (argc < 5)
-		error_exit("Error\nCorrect usage: %s file1 cmd1 cmd2 file2\n", EXIT_FAILURE);
+		error_exit ("Error\nCorrect usage: %s file1 cmd1 cmd2 file2\n", \
+		EXIT_FAILURE);
 	i = -1;
-	while(argv[++i])
+	while (argv[++i])
 	{
-		if(argv[i][0] == 0 || argv[i][0] == 39)
+		if (argv[i][0] == 0 || argv[i][0] == 39)
 			error_exit("Error\nInvalid arguments\n", EXIT_FAILURE);
 		j = 0;
 		while (!ft_isspace(argv[i][j]))
@@ -47,9 +48,9 @@ void	handle_input(int argc, char **argv)
  * @param file The file to be opened.
  * @param envp The environment variables.
  */
-void child_process(t_pipex *ppx, char *infile, char **envp)
+void	child_process(t_pipex *ppx, char *infile, char **envp)
 {
-	int fd;
+	int	fd;
 
 	fd = open(infile, O_RDONLY);
 	if (fd < 0)
@@ -65,9 +66,9 @@ void child_process(t_pipex *ppx, char *infile, char **envp)
  * @param file The file to be opened.
  * @param envp The environment variables.
  */
-void parent_process(t_pipex *ppx, char *outfile, char **envp)
+void	parent_process(t_pipex *ppx, char *outfile, char **envp)
 {
-	int fd;
+	int	fd;
 
 	wait(NULL);
 	fd = open(outfile, O_WRONLY | O_TRUNC | O_CREAT, 0666);
@@ -84,9 +85,9 @@ void parent_process(t_pipex *ppx, char *outfile, char **envp)
  * @param envp The environment variables.
  * @return The initialized pipex structure.
  */
-t_pipex init_struct(char **argv, char **envp)
+t_pipex	init_struct(char **argv, char **envp)
 {
-	t_pipex ppx;
+	t_pipex	ppx;
 
 	ppx.pid = 0;
 	ppx.fd[0] = 0;
@@ -100,7 +101,5 @@ t_pipex init_struct(char **argv, char **envp)
 		ppx.cmd2 = ft_split_trim(argv[3], 39);
 	else
 		ppx.cmd2 = ft_split(argv[3], ' ');
-	return ppx;
+	return (ppx);
 }
-
-

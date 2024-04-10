@@ -6,7 +6,7 @@
 /*   By: mfassbin <mfassbin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/10 19:30:58 by mfassbin          #+#    #+#             */
-/*   Updated: 2024/04/10 19:43:51 by mfassbin         ###   ########.fr       */
+/*   Updated: 2024/04/10 20:02:22 by mfassbin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,17 +26,17 @@
  * @param envp An array of strings containing the environment variables.
  * @return An integer value representing the exit status of the program.
  */
-int main(int argc, char **argv, char **envp)
+int	main(int argc, char **argv, char **envp)
 {
-	t_pipex_b   ppx;
+	t_pipex_b	ppx;
 	int			fd_redir;
 	int			i;
 
 	handle_input(argc, argv);
-    ppx = init_bonus(argc, argv, envp);
+	ppx = init_bonus(argc, argv, envp);
 	fd_redir = open_infile(&ppx, argv);
 	i = 0;
-	while(i < ppx.processes - 1)
+	while (i < ppx.processes - 1)
 	{
 		if (pipe(ppx.fd) == -1)
 			free_and_exit_b(&ppx, "pipe", EXIT_FAILURE);

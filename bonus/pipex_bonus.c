@@ -6,7 +6,7 @@
 /*   By: mfassbin <mfassbin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 13:15:11 by mfassbin          #+#    #+#             */
-/*   Updated: 2024/04/10 19:43:51 by mfassbin         ###   ########.fr       */
+/*   Updated: 2024/04/10 20:05:46 by mfassbin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,7 +89,7 @@ void	last_process(t_pipex_b *ppx, int i, int argc, char **argv, char **envp)
 	int	exit_code;
 
 	j = 0;
-	while(j < ppx->processes - 1)
+	while (j < ppx->processes - 1)
 	{
 		waitpid(0, &exit_code, 0);
 		j++;
@@ -101,8 +101,6 @@ void	last_process(t_pipex_b *ppx, int i, int argc, char **argv, char **envp)
 	close(ppx->fd[1]);
 	close(outfile);
 	if (ppx->here_doc == 1)
-		unlink("here_doc");//deleta o arquivo "here_doc"
+		unlink("here_doc");
 	exec_command(ppx, i, argv, envp);
 }
-
-
