@@ -6,7 +6,7 @@
 /*   By: mfassbin <mfassbin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/10 19:30:58 by mfassbin          #+#    #+#             */
-/*   Updated: 2024/04/10 20:02:22 by mfassbin         ###   ########.fr       */
+/*   Updated: 2024/04/12 10:59:37 by mfassbin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,12 +44,12 @@ int	main(int argc, char **argv, char **envp)
 		if (ppx.pid == -1)
 			free_and_exit_b(&ppx, "fork", EXIT_FAILURE);
 		if (ppx.pid == 0)
-			child_process_b(&ppx, &fd_redir, i, argv, envp);
+			child_process_b(&ppx, &fd_redir, i, argv);
 		if (ppx.pid > 0)
 			parent_process_b(&ppx, &fd_redir);
 		i++;
 	}
 	dup2(fd_redir, STDIN_FILENO);
 	close(fd_redir);
-	last_process(&ppx, i, argc, argv, envp);
+	last_process(&ppx, i, argc, argv);
 }
