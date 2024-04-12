@@ -6,7 +6,7 @@
 /*   By: mfassbin <mfassbin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/30 16:58:39 by mfassbin          #+#    #+#             */
-/*   Updated: 2024/04/01 15:54:06 by mfassbin         ###   ########.fr       */
+/*   Updated: 2024/04/12 11:49:11 by mfassbin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,16 +80,18 @@ char	*new_dest(char *dest)
 		free(dest);
 		return (NULL);
 	}
-	ft_strlcpy2(new_dest, &dest[i], len - i + 1); 
+	ft_strlcpy2(new_dest, &dest[i], len - i + 1);
 	free(dest);
 	return (new_dest);
 }
 
 char	*get_next_line(int fd)
 {
-	static char		*dest; 
+	static char		*dest;
 	char			*line;
 
+	if (fd == -1)
+		free(dest);
 	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
 	dest = read_line(fd, dest);

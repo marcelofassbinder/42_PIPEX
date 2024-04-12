@@ -6,7 +6,7 @@
 /*   By: mfassbin <mfassbin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/26 12:35:20 by mfassbin          #+#    #+#             */
-/*   Updated: 2024/04/03 16:42:09 by mfassbin         ###   ########.fr       */
+/*   Updated: 2024/04/12 11:28:24 by mfassbin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 # include <stdarg.h>
 # include <unistd.h>
 
-int ft_len(char *str);
+int	ft_len(char *str);
 int	ft_printf(int fd, const char *s, ...);
 int	ft_print_format(int fd, char c, va_list args);
 int	ft_putchar(int fd, int c);

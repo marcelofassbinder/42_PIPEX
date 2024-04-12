@@ -6,7 +6,7 @@
 /*   By: mfassbin <mfassbin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/03 12:43:50 by mfassbin          #+#    #+#             */
-/*   Updated: 2023/10/12 20:18:19 by mfassbin         ###   ########.fr       */
+/*   Updated: 2024/04/12 11:23:51 by mfassbin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,7 @@ char	*ft_strnstr(const char *big, const char *little, size_t len)
 
 int	main(void)
 {
-	printf("ft_strnstr = %s\n", ft_strnstr("ola, tudo bem com voce?", "bem", 13));
+	printf("ft_strnstr = %s\n", ft_strnstr("ola, tudo bem com voce?", 
+		"bem", 13));
 	printf("strnstr = %s\n", strnstr("ola, tudo bem com voce?", "bem", 13));
 } */
