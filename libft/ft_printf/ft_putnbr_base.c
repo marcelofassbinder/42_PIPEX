@@ -6,7 +6,7 @@
 /*   By: mfassbin <mfassbin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/26 17:30:59 by mfassbin          #+#    #+#             */
-/*   Updated: 2024/04/03 16:40:25 by mfassbin         ###   ########.fr       */
+/*   Updated: 2024/04/12 11:28:38 by mfassbin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 int	ft_putnbr_base(int fd, long nbr, char *base)
 {
 	long		len;
-	int					count;
+	int			count;
 
 	len = (long)ft_len(base);
 	count = 0;

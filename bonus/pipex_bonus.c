@@ -5,138 +5,103 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: mfassbin <mfassbin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/04/06 13:18:30 by mfassbin          #+#    #+#             */
-/*   Updated: 2024/04/07 18:36:48 by mfassbin         ###   ########.fr       */
+/*   Created: 2024/04/08 13:15:11 by mfassbin          #+#    #+#             */
+/*   Updated: 2024/04/12 11:09:48 by mfassbin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "pipex_bonus.h"
+#include "../includes/pipex_bonus.h"
 
-int here_doc(char **argv)
+/**
+ * Opens the input file for pipex.
+ * 
+ * @param ppx The pipex_b struct containing the necessary information.
+ * @param argv The command line arguments.
+ * @return Returns the infile fd opened.
+ */
+int	open_infile(t_pipex_b *ppx, char **argv)
 {
-    int     fd;
-    char    *line;
+	int	infile;
 
-    fd = open("here_doc", O_CREAT | O_WRONLY | O_TRUNC, 0666);
-    if (fd < 0)
-    {
-        perror("here_doc");
-        exit(EXIT_FAILURE);
-    }
-    while(1)
-    {
-        ft_printf(1, ">");
-        line = get_next_line(0);
-        if (ft_strncmp(line, argv[2], ft_strlen(argv[2])) == 0 && 
-            ft_strlen(line) == ft_strlen(argv[2]) + 1)
-        {
-            free(line);
-            break;
-        }
-        write(fd, line, ft_strlen(line));
-        free(line);
-    }
-    return(fd);
-}
-
-void	exec_command(t_pipex_b *ppx, int i, char **argv, char **envp)
-{
-	int		j;
-	char 	**command;
-
+	if (ppx->here_doc == 0)
+	{
+		infile = open(argv[1], O_RDONLY);
+		if (infile < 0)
+			free_and_exit_b(ppx, argv[1], EXIT_FAILURE);
+	}
 	if (ppx->here_doc == 1)
 	{
-		if (ft_strchr(argv[3 + i], 39) != NULL)
-			command = ft_split_trim(argv[3 + i], 39);
-		else
-			command = ft_split(argv[3 + i], ' ');
+		here_doc(ppx, argv);
+		infile = open("here_doc", O_RDONLY, 0666);
+		if (infile == -1)
+			free_and_exit_b(ppx, "here_doc", EXIT_FAILURE);
 	}
-	else if (ppx->here_doc == 0)
-	{
-		if (ft_strchr(argv[2 + i], 39) != NULL)
-            command = ft_split_trim(argv[2 + i], 39);
-        else
-            command = ft_split(argv[2 + i], ' ');
-	}
-	j = -1;
-	while(ppx->path[j++])
-	{
-		ppx->path[j] = ft_strjoin(ppx->path[j], command[i]);
-		execve(ppx->path[j], &command[i], envp);
-	}
-	perror("execve");
+	return (infile);
 }
 
-void	first_process(t_pipex_b *ppx, char **argv, int i, char **envp)
+/**
+ * Executes the child process for pipex_bonus.
+ *
+ * @param ppx The pipex_b struct containing necessary information.
+ * @param fd_redir The file descriptor for input redirection.
+ * @param i The current number of the iteration in the main function.
+ * @param argv The command line arguments.
+ * @param envp The environment variables.
+ */
+void	child_process_b(t_pipex_b *ppx, int *fd_redir, int i, char **argv)
 {
-	int infile;
+	dup2(*fd_redir, STDIN_FILENO);
+	close(*fd_redir);
+	close(ppx->fd[0]);
+	dup2(ppx->fd[1], STDOUT_FILENO);
+	close(ppx->fd[1]);
+	exec_command(ppx, i, argv);
+}
 
+/**
+ * Parent process for pipex_bonus. This function makes fd_redir receive the read
+ * end of the pipe, 
+ * turning it into the input of the next process.
+ *
+ * @param ppx       The pipex_b struct containing the necessary information.
+ * @param fd_redir  The file descriptor for input/output redirection.
+ */
+void	parent_process_b(t_pipex_b *ppx, int *fd_redir)
+{
+	close(*fd_redir);
+	close(ppx->fd[1]);
+	*fd_redir = ppx->fd[0];
+}
+
+/**
+ * Executes the last process in the pipex program, waiting untill all the 
+ * children processes end, to execute the last command. 
+ *
+ * @param ppx The pipex_b struct containing program information.
+ * @param i The current number of the iteration in the main function.
+ * @param argc The number of command line arguments.
+ * @param argv The command line arguments.
+ * @param envp The environment variables.
+ */
+void	last_process(t_pipex_b *ppx, int i, int argc, char **argv)
+{
+	int	outfile;
+	int	j;
+	int	exit_code;
+
+	j = 0;
+	while (j < ppx->processes - 1)
+	{
+		waitpid(0, &exit_code, 0);
+		j++;
+	}
+	outfile = open(argv[argc - 1], O_WRONLY | O_TRUNC | O_CREAT, 0666);
+	if (outfile == -1)
+		free_and_exit_b(ppx, argv[argc -1], EXIT_FAILURE);
+	dup2(outfile, STDOUT_FILENO);
+	close(ppx->fd[1]);
+	close(outfile);
 	if (ppx->here_doc == 1)
-		infile = here_doc(argv);
-	else
-		infile = open(argv[1],  O_WRONLY, 0666);
-	if (infile < 0)
-		perror(argv[1]);
-	if (pipe(ppx->pipes[0]) == -1)
-		perror("pipe");
-	close(ppx->pipes[0][0]);
-	dup2(infile, STDIN_FILENO);
-	dup2(ppx->pipes[0][1], STDOUT_FILENO);
-	close(ppx->pipes[0][1]);
-	close(infile);
-	if (ppx->here_doc == 1)
-	{
-    	if (unlink("here_doc") < 0)
-    	{
-        	perror("unlink");
-        	exit(EXIT_FAILURE);
-    	}
-	}
-	exec_command(ppx, i, argv, envp);
-}
-
-void	mid_process(t_pipex_b *ppx, int i, char **argv, char **envp)
-{
-	if(pipe(ppx->pipes[i]) == -1)
-		perror("pipe");
-	close(ppx->pipes[i][1]);
-	dup2(ppx->pipes[i -1][1], STDIN_FILENO);
-	dup2(ppx->pipes[i][0], STDOUT_FILENO);
-	close(ppx->pipes[i][0]);
-	close(ppx->pipes[i - 1][1]);
-	exec_command(ppx, i, argv, envp);
-}
-
-void	last_process(t_pipex_b *ppx, char **argv, int argc, int i, char **envp)
-{
-	int outfile;
-
-	outfile = open(argv[argc -1], O_WRONLY | O_TRUNC | O_CREAT, 0666);
-	if (outfile < 0)
-		perror(argv[argc - 1]);
-	if (pipe(ppx->pipes[i]) == -1)
-		perror("pipe");
-	close(ppx->pipes[i][1]);
-	dup2(ppx->pipes[i - 1][1], STDIN_FILENO);
-	dup2(ppx->pipes[i][0], STDOUT_FILENO);
-	close(ppx->pipes[i][0]);
-	close(ppx->pipes[i - 1][1]);
-	exec_command(ppx, i, argv, envp);
-}
-
-t_pipex_b init_bonus(int argc, char **argv, char **envp)
-{
-	t_pipex_b	ppx;
-
-	ppx.here_doc = 0;
-	ppx.processes = argc - 3;
-	if (ft_strcmp(argv[1], "here_doc") == 0)
-	{
-		ppx.here_doc = 1;
-		ppx.processes = argc - 4;
-	}
-	ppx.pipes = ft_calloc(sizeof(int *), ppx.processes - 1);
-	ppx.path = ft_path(envp);
-	ppx.pid = 0;
-	return(ppx);
+		unlink("here_doc");
+	exec_command(ppx, i, argv);
 }

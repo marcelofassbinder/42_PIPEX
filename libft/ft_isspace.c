@@ -1,32 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   free.c                                             :+:      :+:    :+:   */
+/*   ft_isspace.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mfassbin <mfassbin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/04/03 16:21:08 by mfassbin          #+#    #+#             */
-/*   Updated: 2024/04/06 17:07:34 by mfassbin         ###   ########.fr       */
+/*   Created: 2024/04/10 15:17:34 by mfassbin          #+#    #+#             */
+/*   Updated: 2024/04/12 11:25:37 by mfassbin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "pipex.h"
+#include "libft.h"
 
-void	free_array(char **cmd)
+int	ft_isspace(int c)
 {
-	int i;
-
-	i = -1;
-	while(cmd[++i])
-		free(cmd[i]);
-	free(cmd);
-}
-
-void free_and_exit(t_pipex *ppx, char *error, int error_code)
-{
-	perror(error);
-	free_array(ppx->path);
-	free_array(ppx->cmd1);
-	free_array(ppx->cmd2);
-	exit(error_code);
+	if (c == 9 || c == 32)
+		return (0);
+	return (1);
 }
