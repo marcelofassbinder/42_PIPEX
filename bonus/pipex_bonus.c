@@ -6,7 +6,7 @@
 /*   By: mfassbin <mfassbin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 13:15:11 by mfassbin          #+#    #+#             */
-/*   Updated: 2024/04/10 20:05:46 by mfassbin         ###   ########.fr       */
+/*   Updated: 2024/04/12 11:09:48 by mfassbin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,9 +19,9 @@
  * @param argv The command line arguments.
  * @return Returns the infile fd opened.
  */
-int open_infile(t_pipex_b *ppx, char **argv)
+int	open_infile(t_pipex_b *ppx, char **argv)
 {
-	int infile;
+	int	infile;
 
 	if (ppx->here_doc == 0)
 	{
@@ -48,18 +48,19 @@ int open_infile(t_pipex_b *ppx, char **argv)
  * @param argv The command line arguments.
  * @param envp The environment variables.
  */
-void	child_process_b(t_pipex_b *ppx, int *fd_redir, int i, char **argv, char **envp)
+void	child_process_b(t_pipex_b *ppx, int *fd_redir, int i, char **argv)
 {
-	dup2(*fd_redir, STDIN_FILENO); //transforma o fd do infile ou do pipe anterior no input deste processo
-	close(*fd_redir);//fecha o fd do infile ou do pipe anterior
-	close(ppx->fd[0]);// fecha o fd de leitura
-	dup2(ppx->fd[1], STDOUT_FILENO);//transforma o fd de escrita do pipe no output do processo
-	close(ppx->fd[1]);// fecha o fd de escrita
-	exec_command(ppx, i, argv, envp);//executa o comando
+	dup2(*fd_redir, STDIN_FILENO);
+	close(*fd_redir);
+	close(ppx->fd[0]);
+	dup2(ppx->fd[1], STDOUT_FILENO);
+	close(ppx->fd[1]);
+	exec_command(ppx, i, argv);
 }
 
 /**
- * Parent process for pipex_bonus. This function makes fd_redir receive the read end of the pipe, 
+ * Parent process for pipex_bonus. This function makes fd_redir receive the read
+ * end of the pipe, 
  * turning it into the input of the next process.
  *
  * @param ppx       The pipex_b struct containing the necessary information.
@@ -82,7 +83,7 @@ void	parent_process_b(t_pipex_b *ppx, int *fd_redir)
  * @param argv The command line arguments.
  * @param envp The environment variables.
  */
-void	last_process(t_pipex_b *ppx, int i, int argc, char **argv, char **envp)
+void	last_process(t_pipex_b *ppx, int i, int argc, char **argv)
 {
 	int	outfile;
 	int	j;
@@ -102,5 +103,5 @@ void	last_process(t_pipex_b *ppx, int i, int argc, char **argv, char **envp)
 	close(outfile);
 	if (ppx->here_doc == 1)
 		unlink("here_doc");
-	exec_command(ppx, i, argv, envp);
+	exec_command(ppx, i, argv);
 }

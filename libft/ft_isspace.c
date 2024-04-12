@@ -6,15 +6,15 @@
 /*   By: mfassbin <mfassbin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/10 15:17:34 by mfassbin          #+#    #+#             */
-/*   Updated: 2024/04/10 17:59:34 by mfassbin         ###   ########.fr       */
+/*   Updated: 2024/04/12 11:25:37 by mfassbin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-int ft_isspace(int c)
+int	ft_isspace(int c)
 {
-    if (c == 9 || c == 32)
-        return (0);
-    return(1);
+	if (c == 9 || c == 32)
+		return (0);
+	return (1);
 }
