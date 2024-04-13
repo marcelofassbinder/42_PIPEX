@@ -2,8 +2,8 @@ CFILES = source/pipex.c source/error.c source/utils.c source/main.c
 OBJS = ${CFILES:.c=.o}
 BONUSFILES = bonus/pipex_bonus.c bonus/utils_bonus.c bonus/error_bonus.c bonus/main_bonus.c source/utils.c source/error.c source/pipex.c
 OBJSBONUS = ${BONUSFILES:.c=.o}
-CFLAGS = -g -Wall -Werror -Wextra  -fPIC
-GCC = gcc 
+CFLAGS = -g -Wall -Werror -Wextra
+CC = cc 
 LIBFT = libft
 LIBFTA = libft/libft.a
 NAME = pipex
@@ -13,7 +13,7 @@ RM = rm -f
 all: $(NAME)
 
 $(NAME): $(OBJS) $(LIBFTA)
-	$(GCC) $(CFLAGS) $(OBJS) $(LIBFTA) -o $(NAME)
+	$(CC) $(CFLAGS) $(OBJS) $(LIBFTA) -o $(NAME)
 	@echo "\033[032mPIPEX COMPILED\033[0m"
 
 $(LIBFTA): $(LIBFT)
@@ -22,7 +22,7 @@ $(LIBFTA): $(LIBFT)
 bonus: $(NAMEBONUS)
 
 $(NAMEBONUS): $(OBJSBONUS) $(LIBFTA)
-	$(GCC) $(CFLAGS) $(OBJSBONUS) $(LIBFTA) -o $(NAMEBONUS)
+	$(CC) $(CFLAGS) $(OBJSBONUS) $(LIBFTA) -o $(NAMEBONUS)
 	@echo "\033[032mBONUS COMPILED\033[0m"
 
 clean:

@@ -16,7 +16,7 @@ ft_lstdelone.o ft_lstclear.o ft_lstiter.o ft_lstmap.o
 
 RM = rm -rf
 
-GCC = gcc
+CC = cc
 
 CFLAGS = -Wall -Wextra -Werror -g -fPIC
 
