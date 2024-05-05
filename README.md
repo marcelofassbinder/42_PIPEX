@@ -3,9 +3,36 @@
 </h1>
 
 <div align=center>
-  Simulating Shell pipes in C.
+  Replicating Shell pipes in C.
 </div>
 
+# About ✍
+Pipex aims to replicate the functionality of pipes found in a command-line shell. This allows different processes to communicate and exchange data with each other. In achieving this, I delved into new concepts like pipe, fork, exec, dup2, and waitpid.
+
+# Mandatory
+For the mandatory part, I needed to develop a program receiving the arguments as following:
+
+``
+ ./pipex file1 command1 command2 file2
+``
+
+It must behave exactly like the command-line :
+
+``
+ < file1 command1 | command2 > file2
+``
+
+Where:
+
+`file1` - A file being the input to execute `command1` (must exist)
+
+`command1` - A shell command that takes `file1` as input
+
+`command2` - A shell command that takes as input the output of the previous process executed by `command1`
+
+`file2` - A file being the output of the the process executed by `command2` (may exist, otherwise will be created)
+
+# Walktrough
 
 # Grade  <p><img height="30px" src="https://img.shields.io/badge/-125%20%2F%20100-success" /></p>
 
