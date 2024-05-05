@@ -32,7 +32,10 @@ Where:
 
 `file2` - A file being the output of the the process executed by `command2` (may exist, otherwise will be created)
 
-# Walktrough
+#  Walkthrough 🧩
+- Parsing environment variables: I used functions from Libft to parse the environment variables. This resulted in an array of strings, each containing a possible path to the executables for the specified commands.
+- Creating the pipe: Pipes facilitate communication between processes. To establish a pipe, I used the pipe() function. This function returns an array containing two file descriptors: one for reading data from the pipe and another for writing data to the pipe.
+- Forking the process: The fork() function creates a new child process that is a replica of the original process. This allows parallel execution of code within the program.
 
 # Grade  <p><img height="30px" src="https://img.shields.io/badge/-125%20%2F%20100-success" /></p>
 
