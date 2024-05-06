@@ -47,9 +47,52 @@ I used functions from Libft to parse the environment variables. This resulted in
  Once the file descriptors are redirected, we can execute the process. This is achieved using the ``execve`` function, that takes three arguments: a path to the executable (the path we parsed from the environment variables in the first step), the command and its arguments (an array containing the command itself and any additional arguments provided by the user) and the environment variables. If successful, ``execve`` replaces the entire process with the new program specified by the arguments. The process then starts executing the command, inheriting the redirected standard input and standard output we set up with ``dup2``. This transforms the process into the desired command, allowing it to interact with the command-line and other processes.
  ### Waiting for the child to finish
  Before the parent process can continue, it needs to ensure that all its child processes have finished execution. To achieve this, Pipex calls the ``wait`` function. This function pauses the parent process until all its child processes (in this case, one) have completed. Once this happens, the program execution concludes with the parent process finishing.
+ 
+# Bonus ⭐
+For the bonus part, we were required to develop pipex handling multiple pipes, and also support ``<<`` and ``>>``, if ``here_doc`` is passed as the first parameter. 
 
-# Bonus Part
+So, the following command-line:
 
+``
+./pipex source_file command1 command2 command3 ... commandn target_file
+``
+
+Should behave like:
+
+``
+< source_file command1 | command2 | command3 ... | commandn > target_file
+``
+
+And also:
+
+``
+./pipex here_doc LIMITER command1 command2 target_file
+``
+
+Should behave like:
+
+``
+command1 << LIMITER | command2 >> target_file
+``
+
+Where: 
+
+``here_doc``: Mechanism within Pipex to include multiline strings directly in the source code, becoming the STDIN of the process.
+
+``LIMITER``: A string that defines the termination of ``here_doc``.
+### Managing multiple pipes
+- Looping through processes: Pipex bonus utilizes a loop to iterate through the number of commands specified, minus one, where each iteration involves forking a child process.
+- Child process execution: Within the loop, the child process follows the same logic as the single-pipe scenario. It redirects its standard input (stdin) and output (stdout) using dup2 to connect with the appropriate pipe descriptors and execute the specified command.
+- Parent process management: The parent process plays a crucial role in managing the pipeline. It redirects the file descriptors specifically to ensure the next child process has the correct standard input (stdin) to continue the data flow. This creates a chain where the output of one child process becomes the input for the next.
+- Final process and completion: The final process in the pipeline is executed outside the loop, where it employs the ``waitpid`` function to ensure that all child processes finish execution before the program terminates. This guarantees the pipeline's sequential execution and avoids unexpected results.
+
+### Here_doc implememtation
+- Opening a new file descriptor: Using the ``open`` function, Pipex create a new fd, which will receive all the data coming from user.
+- Reading user input: Through ``get_next_line`` the program captures the user's multiline input directly on the terminal.
+- Writing into the file descriptor: While capturing the data, the program writes, until the string ``LIMITER`` is found, into the new fd.
+- File descripton redirection: The captured input is treated as standard input for the first command in the pipeline.
+- Here_doc unlinking: Before finishing the last process, Pipex deletes ``here_doc`` by calling ``unlink`` function.
+  
 # Grade  <p><img height="30px" src="https://img.shields.io/badge/-125%20%2F%20100-success" /></p>
 
 # Norminette 💂🏻
