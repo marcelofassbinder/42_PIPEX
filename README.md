@@ -92,7 +92,46 @@ Where:
 - Writing into the file descriptor: While capturing the data, the program writes, until the string ``LIMITER`` is found, into the new fd.
 - File descripton redirection: The captured input is treated as standard input for the first command in the pipeline.
 - Here_doc unlinking: Before finishing the last process, Pipex deletes ``here_doc`` by calling ``unlink`` function.
-  
+
+  # Usage 🖥️
+To install and test pipex, follow these steps:
+- Clone the repository:
+```bash
+git clone git@github.com:marcelofassbinder/42_PIPEX.git
+```
+- Navigate to the project directory and run ``make`` to compile the program:
+```bash
+cd 42_PIPEX
+make
+```
+- Run the program providing an existing file as input, two valid commands and a file as output. If the output file does not exist, the program will create a new one. For example:
+```bash
+./pipex file1 "grep a" "wc -l" file2
+```
+The example must result in the same output of the original shell command:
+```bash
+< file1 grep a | wc -l > file2
+```
+- For the bonus part, run:
+```bash
+make bonus
+```
+- To test a pipeline, run the program providing again, two files as input and ouput, and any commands you want, for example:
+```bash
+./pipex_bonus file1 "ls -l" "grep a" "wc -l" "cat"... file2 
+```
+- The example must result in the same output of the original shell command:
+```bash
+< file1 ls -l | grep a | wc -l | cat | ... > file2 
+```
+- To test the here_doc, run the program providing "here_doc" and a string LIMITER(delimits the end of the file) as the first and second arguments, respectively. For example:
+```bash
+./pipex_bonus here_doc LIMITER "ls -l" "grep a" "wc -l" "cat"... file2 
+```
+- The example must result in the same output of the original shell command:
+```bash
+ls -l << LIMITER | ls -l | grep a | wc -l | cat | ... >> file2 
+```
 # Grade  <p><img height="30px" src="https://img.shields.io/badge/-125%20%2F%20100-success" /></p>
 
 # Norminette 💂🏻
